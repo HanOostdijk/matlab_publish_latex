@@ -1,0 +1,21 @@
+# MATLAB related
+*.asv
+# Latex, markup related
+###################
+#*.pdf
+*.aux
+*.log
+*.lol
+#*.tex
+*.toc
+*.eps
+ 
+# Folders #
+############
+html/*.sty
+html/*-eps-converted-to.pdf
+
+# zipped files #
+############
+*.zip
+*.gz
