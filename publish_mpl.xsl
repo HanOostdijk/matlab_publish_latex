@@ -54,11 +54,13 @@ Adapted August 2015 by Han Oostdijk
 \sloppy
 \definecolor{lightgray}{gray}{0.5}
 \setlength{\parindent}{0pt}
+\setcounter{secnumdepth}{-2} 
 
 \begin{document}
 \title{mytitle}
 \author{myauthor}
 \maketitle
+\tableofcontents
 \lstlistoflistings  
 \listoffigures
 
@@ -107,7 +109,7 @@ Adapted August 2015 by Han Oostdijk
             </xsl:choose>
           </xsl:variable>
 
-\<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
+\<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>} 
 
 </xsl:if>
 

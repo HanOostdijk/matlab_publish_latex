@@ -7,7 +7,7 @@ and additional `publish` options we can achieve the following:
  * determine the documentclass and layout of the document 
  * show MATLAB code (and also listings of mfiles) in a nice layout
  * specify hyperref options that determine the pdf attributes
- * determine how the header of the document is presented (titel, author, list of figures and listings)
+ * determine how the header of the document is presented (titel, author, contents, list of figures and listings)
  * include captions and references
 
 For converting the tex-file to a pdf-file I use TeXworks (a component of MiKTeX)
@@ -46,7 +46,8 @@ done) by e.g.
 |  pdfcreator           | only for latex, default '' 
 |  title                | only for latex, default ''	
 |  author               | only for latex, default '' 	
-|  maketitle            | only for latex, default false 	
+|  maketitle            | only for latex, default false 
+|  maketableofcontents  | only for latex, default false		
 |  makelstlistoflistings| only for latex, default false	
 |  makelistoffigures    | only for latex, default false	
 
@@ -60,7 +61,7 @@ The applications contains
  * publish_mpl.m (main function)
  * publish_mpl.xsl(stylesheet)
  * package matlab-prettifier (matlab-prettifier.sty will suffice)
- * publish_mpl_examples.m, exampleA.m and exampleB.m (example files)
+ * publish_mpl_examples.m, exampleA.m and exampleB.m (example files) and their outputs in the html subfolder
 
 ### Future developments
 No future developments are planned. However you could check [this repository]

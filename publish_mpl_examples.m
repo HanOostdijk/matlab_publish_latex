@@ -55,4 +55,32 @@ pstruct = struct( ...                                   % publish options
     'newname' , 'exampleB1.tex' , ...                   % new name of output file     
     'pdfauthor', 'han@hanoostdijk.nl' , ...         	% insert a pdf option
     'makelstlistoflistings', true);                     % create lstlistoflistings
+newname = publish_mpl2('exampleB', pstruct) ;           	% produce the output file (tex)    
+
+%% example5: -> latex  
+% same as example4 but now with a regular LaTeX contents 
+% by setting 'maketableofcontents' to true
+mycode = { ...                                          % example of code to execute (one line)  
+            'exampleB'   ...
+            } ; 
+pstruct = struct( ...                                   % publish options
+    'format' , 'latex' , ...                            % output format latex using the new xsl file
+    'call' , {mycode} , ...                             % code to execute (defined above)
+    'newname' , 'exampleB2.tex' , ...                   % new name of output file     
+    'pdfauthor', 'han@hanoostdijk.nl' , ...         	% insert a pdf option    
+    'maketableofcontents', true , ...                   % create tableofcontents
+    'makelstlistoflistings', true);                     % create lstlistoflistings
+newname = publish_mpl('exampleB', pstruct) ;           	% produce the output file (tex)    
+
+%% example5: -> xml 
+% same as example3 but now to xml format
+mycode = { ...                                          % example of code to execute (one line)  
+            'exampleB'   ...
+            } ; 
+pstruct = struct( ...                                   % publish options
+    'format' , 'xml' , ...                            % output format latex using the new xsl file
+    'call' , {mycode} , ...                             % code to execute (defined above)
+    'newname' , 'exampleB3.xml' , ...                  % new name of output file     
+    'pdfauthor', 'han@hanoostdijk.nl' , ...         	% insert a pdf option
+    'makelstlistoflistings', true);                     % create lstlistoflistings
 newname = publish_mpl('exampleB', pstruct) ;           	% produce the output file (tex)    

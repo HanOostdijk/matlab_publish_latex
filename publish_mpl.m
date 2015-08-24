@@ -79,11 +79,11 @@ else
 end
 if strcmpi(p1.format,'pdf') && ...
       not(ismember(p1.imageFormat,{'bmp', 'jpg'}))
-  p1.imageFormat = 'jpg';                               % image format to use
+  p1.imageFormat    = 'jpg';                         	% image format to use
 end
 % execute the standard MATLAB 'publish' function
-docfile                 = publish(file,p1) ;            % publish the file to indicated format and standard name
-outdir                  = p1.outputDir ;                   % directory the file is created in
+docfile           	= publish(file,p1) ;                % publish the file to indicated format and standard name
+outdir            	= p1.outputDir ;                    % directory the file is created in
 if strcmpi(pstruct.format,'latex')
     delete('publish_mpl_temp.xsl') ;                 	% delete the temporary xsl file just created
     sty_file=fullfile(outdir,'matlab-prettifier.sty');  % name of sty file in output directory
@@ -159,8 +159,15 @@ fin  	= fopen(file_in);                               % open input file
 fout  	= fopen(file_out,'wt');                         % open output file
 xsl_lines = [ 1 33 36  ;                                % blocks of xsl lines : copy and insert
             37 42 49 ;                                  % this means for next line
-            50 58 63;                                   % copy lines 50-58 (inclusive) and skip
-            64 inf inf] ;                               % lines 59-63 that inserted by insert_xsl
+            50 59 65;                                   % copy lines 50-59 (inclusive) and skip
+            66 111 112 ] ;                              % lines 60-65 that are inserted by insert_xsl 
+if varpart.maketableofcontents 
+    xsl_lines = [xsl_lines ; [113 139 148           	% when tableofcontents erase alternative contents
+            149 inf inf]] ;                             %   copy to end   
+else
+    xsl_lines = [xsl_lines ; ...                        % when no tableofcontents
+            [113 inf inf]] ;                            %   copy to end
+end
 xsl_ci = size(xsl_lines,1)-1 ;                          % blocks with copy and insert (all except last)
 for i = 1:xsl_ci
     for linenr=xsl_lines(i,1):xsl_lines(i,3)            % lines to read
@@ -199,6 +206,7 @@ ds = struct( ...                                        % order should correspon
   	'title', '',  ...                                   % 	
     'author', '',   ...                              	% 	
   	'maketitle', false,   ...                       	% 	
+    'maketableofcontents', false,   ...                 % 	
   	'makelstlistoflistings', false,   ...               % 	
   	'makelistoffigures', false   ...                    % 	
     ) ;
@@ -263,15 +271,15 @@ switch i
         t1 = sprintf(t1,ds.pdfcreator);
         fprintf(fout,'%s\n',t1) ;
     case 3
-     	% 59 \title{mytitle}
+     	% 60 \title{mytitle}
         t1 = '\\title{%s}';
         t1 = sprintf(t1,ds.title);
         fprintf(fout,'%s\n',t1) ;
-        % 60 \author{myauthor}
+        % 61 \author{myauthor}
         t1 = '\\author{%s}';
         t1 = sprintf(t1,ds.author);
         fprintf(fout,'%s\n',t1) ;    
-      	% 61 \maketitle
+      	% 62 \maketitle
         t1 = '%s\\maketitle'; 
         if ds.maketitle 
             s1 = '' ;
@@ -279,8 +287,17 @@ switch i
             s1 = '%' ;
         end
         t1 = sprintf(t1,s1);
-        fprintf(fout,'%s\n',t1) ;    
-        % 62 \lstlistoflistings 
+        fprintf(fout,'%s\n',t1) ;   
+        % 63 \tableofcontents
+        t1 = '%s\\tableofcontents'; 
+        if ds.maketableofcontents 
+            s1 = '' ;
+        else
+            s1 = '%' ;
+        end
+        t1 = sprintf(t1,s1);
+        fprintf(fout,'%s\n',t1) ;  
+        % 64 \lstlistoflistings 
         t1 = '%s\\lstlistoflistings'; 
         if ds.makelstlistoflistings 
             s1 = '' ;
@@ -289,7 +306,7 @@ switch i
         end
         t1 = sprintf(t1,s1);
         fprintf(fout,'%s\n',t1) ;      
-        % 63 \listoffigures
+        % 65 \listoffigures
         t1 = '%s\\listoffigures'; 
         if ds.makelistoffigures 
             s1 = '' ;
@@ -298,5 +315,15 @@ switch i
         end
       	t1 = sprintf(t1,s1);
         fprintf(fout,'%s\n',t1) ;     
+    case 4
+        % 112 \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
+        t1 = '\\<xsl:value-of select="$headinglevel"/>%s{<xsl:apply-templates select="steptitle"/>}';
+        if ds.maketableofcontents 
+            s1 = '' ;
+        else
+            s1 = '*' ;
+        end
+        t1 = sprintf(t1,s1);
+        fprintf(fout,'%s\n',t1) ;                
 end
 end
