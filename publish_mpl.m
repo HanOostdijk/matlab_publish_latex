@@ -34,6 +34,7 @@
 %  title                : only for latex, default ''	
 %  author               : only for latex, default '' 	
 %  maketitle            : only for latex, default false 	
+%  maketableofcontents  : only for latex, default false 	
 %  makelstlistoflistings: only for latex, default false	
 %  makelistoffigures    : only for latex, default false	
 % 
