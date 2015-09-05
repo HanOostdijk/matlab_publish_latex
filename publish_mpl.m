@@ -89,8 +89,8 @@ if strcmpi(pstruct.format,'latex')
     delete('publish_mpl_temp.xsl') ;                 	% delete the temporary xsl file just created
     sty_file=fullfile(outdir,'matlab-prettifier.sty');  % name of sty file in output directory
     if ~(exist(sty_file,'file') > 0)                    % if sty file in output directory does not exist
-        dos(sprintf('copy "%s" "%s"', ...               % rename published file
-            'matlab-prettifier.sty',sty_file)) ;
+        dos(sprintf('copy "%s" "%s"', ...               % copy sty-file
+            which('matlab-prettifier.sty'),sty_file)) ;
     end
 end
 newname                 = pstruct.newname ;             % newname to assign
