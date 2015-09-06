@@ -162,7 +162,7 @@ xsl_lines = [ 1 33 36  ;                                % blocks of xsl lines : 
             37 42 49 ;                                  % this means for next line
             50 59 65;                                   % copy lines 50-59 (inclusive) and skip
             66 111 112 ] ;                              % lines 60-65 that are inserted by insert_xsl 
-if ds.maketableofcontents   % correction varpart -> ds
+if ds.maketableofcontents 
     xsl_lines = [xsl_lines ; [113 139 148           	% when tableofcontents erase alternative contents
             149 inf inf]] ;                             %   copy to end   
 else

@@ -1,3 +1,4 @@
+addpath('../code')
 %% example1: -> pdf
 % Use the function to create pdf-file.
 % This is the same as using the publish user interface.
@@ -55,7 +56,7 @@ pstruct = struct( ...                                   % publish options
     'newname' , 'exampleB1.tex' , ...                   % new name of output file     
     'pdfauthor', 'han@hanoostdijk.nl' , ...         	% insert a pdf option
     'makelstlistoflistings', true);                     % create lstlistoflistings
-newname = publish_mpl2('exampleB', pstruct) ;           	% produce the output file (tex)    
+newname = publish_mpl('exampleB', pstruct) ;           	% produce the output file (tex)    
 
 %% example5: -> latex  
 % same as example4 but now with a regular LaTeX contents 
@@ -72,7 +73,7 @@ pstruct = struct( ...                                   % publish options
     'makelstlistoflistings', true);                     % create lstlistoflistings
 newname = publish_mpl('exampleB', pstruct) ;           	% produce the output file (tex)    
 
-%% example5: -> xml 
+%% example6: -> xml 
 % same as example3 but now to xml format
 mycode = { ...                                          % example of code to execute (one line)  
             'exampleB'   ...
