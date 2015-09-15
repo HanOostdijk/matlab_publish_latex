@@ -63,7 +63,7 @@ Adapted August 2015 by Han Oostdijk
 \tableofcontents
 \lstlistoflistings  
 \listoffigures
-
+\def\graphwidth{4in} 
 \def\captionA{} 
 \def\captionB{} 
 \def\captionC{} 
@@ -229,7 +229,7 @@ Adapted August 2015 by Han Oostdijk
 <xsl:template match="img">
 \begin{figure}[ht]
 \centering 
-\includegraphics [width=4in]{<xsl:value-of select="@src"/>}
+\includegraphics [width=\graphwidth]{<xsl:value-of select="@src"/>}
 \caption{\caption<xsl:number format="A" level="any"/>} 
 \label{<xsl:value-of select="@src"/>} 
 \end{figure}

@@ -21,7 +21,8 @@
 %  newname              : for all formats, to rename the resulting file
 %  documentclass        : only for latex, default 'article'
 %  paper                : only for latex, default 'a4paper' 
-%  sizes                : only for latex, default 'margin=1in'    
+%  sizes                : only for latex, default 'margin=1in'   
+%  graph_width          : only for latex, default '4in'   
 %  orientation          : only for latex, default 'landscape' 
 %  prettifier_options   : only for latex, default 'framed,numbered'
 %  style                : only for latex, default 'Matlab-editor'
@@ -35,7 +36,7 @@
 %  author               : only for latex, default '' 	
 %  maketitle            : only for latex, default false 	
 %  maketableofcontents  : only for latex, default false 	
-%  makelstlistoflistings: only for latex, default false	
+%  makelistoflistings   : only for latex, default false	
 %  makelistoffigures    : only for latex, default false	
 % 
 %% Acknowledgement
@@ -160,8 +161,8 @@ fin  	= fopen(file_in);                               % open input file
 fout  	= fopen(file_out,'wt');                         % open output file
 xsl_lines = [ 1 33 36  ;                                % blocks of xsl lines : copy and insert
             37 42 49 ;                                  % this means for next line
-            50 59 65;                                   % copy lines 50-59 (inclusive) and skip
-            66 111 112 ] ;                              % lines 60-65 that are inserted by insert_xsl 
+            50 59 66;                                   % copy lines 50-59 (inclusive) and skip
+            67 111 112 ] ;                              % lines 60-66 that are inserted by insert_xsl 
 if ds.maketableofcontents 
     xsl_lines = [xsl_lines ; [113 139 148           	% when tableofcontents erase alternative contents
             149 inf inf]] ;                             %   copy to end   
@@ -195,6 +196,7 @@ ds = struct( ...                                        % order should correspon
     'documentclass', 'article', ...
     'paper', 'a4paper',  ...   
     'sizes', 'margin=1in', ...     
+    'graph_width', '4in', ... 
     'orientation', 'landscape',  ...                 	% 'landscape' or 'portrait'
     'prettifier_options', 'framed,numbered', ...
     'style', 'Matlab-editor',  ...                     	% 'Matlab-editor', 'Matlab-bw', 'Matlab-Pyglike' 
@@ -208,7 +210,7 @@ ds = struct( ...                                        % order should correspon
     'author', '',   ...                              	% 	
   	'maketitle', false,   ...                       	% 	
     'maketableofcontents', false,   ...                 % 	
-  	'makelstlistoflistings', false,   ...               % 	
+  	'makelistoflistings', false,   ...                  % 	
   	'makelistoffigures', false   ...                    % 	
     ) ;
 deffields = fields(ds)' ;                             	% fields of default structure                    
@@ -300,7 +302,7 @@ switch i
         fprintf(fout,'%s\n',t1) ;  
         % 64 \lstlistoflistings 
         t1 = '%s\\lstlistoflistings'; 
-        if ds.makelstlistoflistings 
+        if ds.makelistoflistings 
             s1 = '' ;
         else
             s1 = '%' ;
@@ -315,7 +317,11 @@ switch i
             s1 = '%' ;
         end
       	t1 = sprintf(t1,s1);
-        fprintf(fout,'%s\n',t1) ;     
+        fprintf(fout,'%s\n',t1) ;    
+      	% 66 \def\graphwidth{4in} 
+        t1 = '\\def\\graphwidth{%s}'; 
+      	t1 = sprintf(t1,ds.graph_width);
+        fprintf(fout,'%s\n',t1) ;   
     case 4
         % 112 \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
         t1 = '\\<xsl:value-of select="$headinglevel"/>%s{<xsl:apply-templates select="steptitle"/>}';

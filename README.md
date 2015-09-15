@@ -34,7 +34,8 @@ done) by e.g.
 |  newname              | for all formats, to rename the resulting file 
 |  documentclass        | only for latex, default 'article'             
 |  paper                | only for latex, default 'a4paper' 
-|  sizes                | only for latex, default 'margin=1in'    
+|  sizes                | only for latex, default 'margin=1in'  
+|  graph_width   		| only for latex, default '4in'   
 |  orientation          | only for latex, default 'landscape' 
 |  prettifier_options   | only for latex, default 'framed,numbered'
 |  style                | only for latex, default 'Matlab-editor'
@@ -48,7 +49,7 @@ done) by e.g.
 |  author               | only for latex, default '' 	
 |  maketitle            | only for latex, default false 
 |  maketableofcontents  | only for latex, default false		
-|  makelstlistoflistings| only for latex, default false	
+|  makelistoflistings   | only for latex, default false	
 |  makelistoffigures    | only for latex, default false	
 
 ### Acknowledgement
