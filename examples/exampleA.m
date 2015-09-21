@@ -93,4 +93,6 @@ end
 %% Listing of publish_mpl_examples.m
 % <latex>
 % \lstinputlisting{../publish_mpl_examples.m}
+% % NB From MATLAB R2015a onwards it is possible to include an external file in the output
+% % with the <include> ... <\include> construction (with syntax highlighting in case of an m-file).
 % </latex>
