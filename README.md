@@ -1,23 +1,23 @@
 ## matlab_publish_latex
-`publish_mpl` is an extension of the MATLAB publish function with extra possibilities for latex.
-Motivation for creating this new function is that I want more control than the pdf and html format can offer. 
-So LaTeX is the obvious choice but at the same time I want to avoid manual editing of the tex file handle as much as possible. 
+`publish_mpl` is an extension of the MATLAB `publish` function with extra possibilities for latex.
+Motivation for creating this new function is that I want more control than the pdf and html format of `publish` can offer. 
+So LaTeX is the obvious choice but at the same time I want to avoid manual editing of the tex file as much as possible. 
 By using an adapted xsl file, the package matlab-prettifier created by Julien Cretel 
 and additional `publish` options we can achieve the following:
- * determine the documentclass and layout of the document 
+ * specify the documentclass and layout of the document 
  * show MATLAB code (and also listings of mfiles) in a nice layout
  * specify hyperref options that determine the pdf attributes
- * determine how the header of the document is presented (titel, author, contents, list of figures and listings)
+ * specify how the header of the document is presented (titel, author, contents, list of figures and listings)
  * include captions and references
 
-For converting the tex-file to a pdf-file I use TeXworks (a component of MiKTeX)
+For converting the tex-file to a pdf-file I use TeXworks (a component of MiKTeX).
 
 ### Examples
-See publish_mpl_examples for examples of use.
+See publish_mpl_examples in the example folder for examples of use.
 
 ### Workings
-As usual the options for publish are specified in a structure. 
-Additional options of publish are used to make changes to a base xsl file (publish_mpl.xsl).
+As usual the options for `publish` are specified in a structure. 
+Additional options of `publish` are used to make changes to a base xsl file (publish_mpl.xsl).
 The standard `publish` function is then called with the modified xsl file.
 
 References and captions to plots are supported.  
@@ -60,10 +60,13 @@ by the LaTeX package `matlab-prettifier` created by Julien Cretel.
 ### Contents
 The applications contains
  * publish_mpl.m (main function)
- * publish_mpl.xsl(stylesheet)
+ * publish_mpl.xsl (stylesheet)
  * package matlab-prettifier (matlab-prettifier.sty will suffice)
  * publish_mpl_examples.m, exampleA.m and exampleB.m (example files) and their outputs in the html subfolder
 
 ### Future developments
 No future developments are planned. However you could check [this repository]
 (https://github.com/HanOostdijk/matlab_publish_latex.git) to see if something new has come up.
+
+### License
+This software is distributed under the MIT License (MIT): see copyright.txt
