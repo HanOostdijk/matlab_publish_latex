@@ -38,6 +38,8 @@
 %  maketableofcontents  : only for latex, default false 	
 %  makelistoflistings   : only for latex, default false	
 %  makelistoffigures    : only for latex, default false	
+%  extra_preamblex      : only for latex, default ' ' , x in 1:10
+%  extra_bodyx          : only for latex, default ' ' , x in 1:10 
 % 
 %% Acknowledgement
 % This code builds heavily on mxdom2latex.xsl by Ned Gulley and Matthew Simoneau, September 2003
@@ -72,7 +74,7 @@ p1.evalCode         = pstruct.evalcode ;             	% insert evalcode indicati
 p1.format           = pstruct.format;                   % insert format e.g. word, pdf or latex
 if strcmpi(p1.format,'latex')                           % shows the new handling of latex format    
     p1.stylesheet  	= 'publish_mpl_temp.xsl' ;       	% new temporary stylesheet to use
-    construct_xsl('publish_mpl.xsl', ...                % construct this file using the 
+    construct_xsl('publish_mpl.xsl', ...                % construct temp file using publish_mpl.xsl and the
         p1.stylesheet, pstruct)                         % parameters (fields) in the structure
     p1.imageFormat  = 'epsc2';                          % image format to use
 else
@@ -159,16 +161,16 @@ end
 ds      = use_defaults(varpart) ;                       % overwrite default values
 fin  	= fopen(file_in);                               % open input file
 fout  	= fopen(file_out,'wt');                         % open output file
-xsl_lines = [ 1 33 36  ;                                % blocks of xsl lines : copy and insert
-            37 42 49 ;                                  % this means for next line
-            50 59 66;                                   % copy lines 50-59 (inclusive) and skip
-            67 111 112 ] ;                              % lines 60-66 that are inserted by insert_xsl 
+xsl_lines = [ 1 33 46  ;                                % blocks of xsl lines : copy and insert
+            47 52 59 ;                                  % this means for next line
+            60 69 86;                                   % copy lines 50-59 (inclusive) and skip
+            87 131 132 ] ;                              % lines 60-66 that are inserted by insert_xsl 
 if ds.maketableofcontents 
-    xsl_lines = [xsl_lines ; [113 139 148           	% when tableofcontents erase alternative contents
-            149 inf inf]] ;                             %   copy to end   
+    xsl_lines = [xsl_lines ; [133 159 168           	% when tableofcontents erase alternative contents
+            169 inf inf]] ;                             %   copy to end   
 else
     xsl_lines = [xsl_lines ; ...                        % when no tableofcontents
-            [113 inf inf]] ;                            %   copy to end
+            [133 inf inf]] ;                            %   copy to end
 end
 xsl_ci = size(xsl_lines,1)-1 ;                          % blocks with copy and insert (all except last)
 for i = 1:xsl_ci
@@ -198,7 +200,7 @@ ds = struct( ...                                        % order should correspon
     'sizes', 'margin=1in', ...     
     'graph_width', '4in', ... 
     'orientation', 'landscape',  ...                 	% 'landscape' or 'portrait'
-    'prettifier_options', 'framed,numbered', ...
+    'prettifier_options', 'framed,numbered', ...        % (un)framed, (un)numbered
     'style', 'Matlab-editor',  ...                     	% 'Matlab-editor', 'Matlab-bw', 'Matlab-Pyglike' 
     'pdftitle', '',  ...                                % 	
     'pdfauthor', '',  ...                               % 	
@@ -211,7 +213,27 @@ ds = struct( ...                                        % order should correspon
   	'maketitle', false,   ...                       	% 	
     'maketableofcontents', false,   ...                 % 	
   	'makelistoflistings', false,   ...                  % 	
-  	'makelistoffigures', false   ...                    % 	
+  	'makelistoffigures', false,   ...                 	% 
+    'extra_preamble1', ' ', ...                         %
+    'extra_preamble2', ' ', ...                       	%
+    'extra_preamble3', ' ', ...                         %
+    'extra_preamble4', ' ', ...                         %
+    'extra_preamble5', ' ', ...                         %
+    'extra_preamble6', ' ', ...                         %
+    'extra_preamble7', ' ', ...                         %
+    'extra_preamble8', ' ', ...                         %
+    'extra_preamble9', ' ', ...                         %
+    'extra_preamble10', ' ', ...                        %
+    'extra_body1', ' ', ...                             %
+    'extra_body2', ' ', ...                             %
+    'extra_body3', ' ', ...                             %
+    'extra_body4', ' ', ...                             %
+    'extra_body5', ' ', ...                             %
+    'extra_body6', ' ', ...                             %
+    'extra_body7', ' ', ...                             %
+    'extra_body8', ' ', ...                             %
+    'extra_body9', ' ', ...                             %
+    'extra_body10', ' '  ...                            %
     ) ;
 deffields = fields(ds)' ;                             	% fields of default structure                    
 for f1 = deffields                                      % for each of the fields
@@ -236,53 +258,63 @@ switch i
         t1 = '\\documentclass{%s}' ;                    % format for new line
         t1 = sprintf(t1,ds.documentclass);              % create the new line
         fprintf(fout,'%s\n',t1) ;                       % write the new line to output xsl file
-        % 35 \usepackage[a4paper,margin=1in,landscape]{geometry}
+       	% 35 -44 extra_preamblex                        % extra latex statements for preamble
+        for j=1:10 
+            t1 = ds.(sprintf('extra_preamble%.0f',j));
+            fprintf(fout,'%s\n',t1) ;
+        end
+        % 45 \usepackage[a4paper,margin=1in,landscape]{geometry}
         t1 = '\\usepackage[%s,%s,%s]{geometry}';
         t1 = sprintf(t1,ds.paper,ds.sizes,ds.orientation);
         fprintf(fout,'%s\n',t1) ;
-        % 36 \usepackage[framed,numbered]{matlab-prettifier}
+        % 46 \usepackage[framed,numbered]{matlab-prettifier}
         t1 = '\\usepackage[%s]{matlab-prettifier}';
         t1 = sprintf(t1,ds.prettifier_options);
         fprintf(fout,'%s\n',t1) ;
     case 2
-        % 43 \lstset{style = Matlab-editor}
+        % 53 \lstset{style = Matlab-editor}
         t1 = '\\lstset{style = %s}';
         t1 = sprintf(t1,ds.style);
         fprintf(fout,'%s\n',t1) ;
-        % 44 \usepackage[unicode=true,pdftitle={},
+        % 54 \usepackage[unicode=true,pdftitle={},
         t1 = '\\usepackage[unicode=true,pdftitle={%s},';
         t1 = sprintf(t1,ds.pdftitle);
         fprintf(fout,'%s\n',t1) ;        
-        % 45 pdfauthor={Han Oostdijk Quantitative Consultancy (han@hanoostdijk.nl)},
+        % 55 pdfauthor={Han Oostdijk Quantitative Consultancy (han@hanoostdijk.nl)},
         t1 = 'pdfauthor={%s},';
         t1 = sprintf(t1,ds.pdfauthor);
         fprintf(fout,'%s\n',t1) ;   
-        % 46 pdfsubject={},
+        % 56 pdfsubject={},
         t1 = 'pdfsubject={%s},';
         t1 = sprintf(t1,ds.pdfsubject);
         fprintf(fout,'%s\n',t1) ;   
-        % 47 pdfkeywords={},
+        % 57 pdfkeywords={},
         t1 = 'pdfkeywords={%s},';
         t1 = sprintf(t1,ds.pdfkeywords);
         fprintf(fout,'%s\n',t1) ;   
-        % 48 pdfproducer={},
+        % 58 pdfproducer={},
         t1 = 'pdfproducer={%s},';
         t1 = sprintf(t1,ds.pdfproducer);
         fprintf(fout,'%s\n',t1) ;   
-        % 49 pdfcreator={},
+        % 59 pdfcreator={},
         t1 = 'pdfcreator={%s},';
         t1 = sprintf(t1,ds.pdfcreator);
         fprintf(fout,'%s\n',t1) ;
     case 3
-     	% 60 \title{mytitle}
+        % 70 -79 extra_bodyx                            % extra latex statements for body
+        for j=1:10 
+            t1 = ds.(sprintf('extra_body%.0f',j));
+            fprintf(fout,'%s\n',t1) ;
+        end
+     	% 80 \title{mytitle}
         t1 = '\\title{%s}';
         t1 = sprintf(t1,ds.title);
         fprintf(fout,'%s\n',t1) ;
-        % 61 \author{myauthor}
+        % 81 \author{myauthor}
         t1 = '\\author{%s}';
         t1 = sprintf(t1,ds.author);
         fprintf(fout,'%s\n',t1) ;    
-      	% 62 \maketitle
+      	% 82 \maketitle
         t1 = '%s\\maketitle'; 
         if ds.maketitle 
             s1 = '' ;
@@ -291,7 +323,7 @@ switch i
         end
         t1 = sprintf(t1,s1);
         fprintf(fout,'%s\n',t1) ;   
-        % 63 \tableofcontents
+        % 83 \tableofcontents
         t1 = '%s\\tableofcontents'; 
         if ds.maketableofcontents 
             s1 = '' ;
@@ -300,7 +332,7 @@ switch i
         end
         t1 = sprintf(t1,s1);
         fprintf(fout,'%s\n',t1) ;  
-        % 64 \lstlistoflistings 
+        % 84 \lstlistoflistings 
         t1 = '%s\\lstlistoflistings'; 
         if ds.makelistoflistings 
             s1 = '' ;
@@ -309,7 +341,7 @@ switch i
         end
         t1 = sprintf(t1,s1);
         fprintf(fout,'%s\n',t1) ;      
-        % 65 \listoffigures
+        % 85 \listoffigures
         t1 = '%s\\listoffigures'; 
         if ds.makelistoffigures 
             s1 = '' ;
@@ -318,12 +350,12 @@ switch i
         end
       	t1 = sprintf(t1,s1);
         fprintf(fout,'%s\n',t1) ;    
-      	% 66 \def\graphwidth{4in} 
+      	% 86 \def\graphwidth{4in} 
         t1 = '\\def\\graphwidth{%s}'; 
       	t1 = sprintf(t1,ds.graph_width);
         fprintf(fout,'%s\n',t1) ;   
     case 4
-        % 112 \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
+        % 132 \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
         t1 = '\\<xsl:value-of select="$headinglevel"/>%s{<xsl:apply-templates select="steptitle"/>}';
         if ds.maketableofcontents 
             s1 = '' ;

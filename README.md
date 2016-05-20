@@ -51,6 +51,8 @@ done) by e.g.
 |  maketableofcontents  | only for latex, default false		
 |  makelistoflistings   | only for latex, default false	
 |  makelistoffigures    | only for latex, default false	
+|  extra_preamblex      | only for latex, default ' ' , x in 1:10 (extra latex preamble statements)
+|  extra_bodyx          | only for latex, default ' ' , x in 1:10 (extra latex body statements)
 
 ### Acknowledgement
 This code builds heavily on `mxdom2latex.xsl` by Ned Gulley and Matthew Simoneau, September 2003

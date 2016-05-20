@@ -32,6 +32,16 @@ Adapted August 2015 by Han Oostdijk
 %
 
 \documentclass{article}
+reserve_extra_line_class1
+reserve_extra_line_class2
+reserve_extra_line_class3
+reserve_extra_line_class4
+reserve_extra_line_class5
+reserve_extra_line_class6
+reserve_extra_line_class7
+reserve_extra_line_class8
+reserve_extra_line_class9
+reserve_extra_line_class10
 \usepackage[a4paper,margin=1in,landscape]{geometry}
 \usepackage[framed,numbered]{matlab-prettifier}
 % package matlab-prettifier created by Julien Cretel. Available CTAN (only matlab-prettifier.sty is needed)
@@ -57,6 +67,16 @@ Adapted August 2015 by Han Oostdijk
 \setcounter{secnumdepth}{-2} 
 
 \begin{document}
+reserve_extra_line_document1
+reserve_extra_line_document2
+reserve_extra_line_document3
+reserve_extra_line_document4
+reserve_extra_line_document5
+reserve_extra_line_document6
+reserve_extra_line_document7
+reserve_extra_line_document8
+reserve_extra_line_document9
+reserve_extra_line_document10
 \title{mytitle}
 \author{myauthor}
 \maketitle
