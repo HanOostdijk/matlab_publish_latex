@@ -9,8 +9,13 @@ and additional `publish` options we can achieve the following:
  * specify hyperref options that determine the pdf attributes
  * specify how the header of the document is presented (titel, author, contents, list of figures and listings)
  * include captions and references
+ * specify properties to include in the pdf file (options starting with `pdf`)
+ * insert whatever latex statements in preamble or body to include additional latex functionality
 
 For converting the tex-file to a pdf-file I use TeXworks (a component of MiKTeX).
+
+### New
+Functionality for inserting latex statements in preamble or body (May 2016)
 
 ### Examples
 See publish_mpl_examples in the example folder for examples of use.
@@ -25,8 +30,15 @@ A plot of a script `xxx` will get a label `xxx-0n.eps` if it is the n-th plot. I
 the second plot with e.g. `figure \ref{xxx_02.eps} on page \pageref{xxx_02.eps}` .  
 A plot will get as caption `captionX` with X = 'A' for the first, 'B' for the second plot and so on. 
 The caption for the second plot can be set in such a latex block (before the plot is actually
-done) by e.g.  
-`\global\def\captionB{my caption for the second plot}`.
+done) by e.g. `\global\def\captionB{my caption for the second plot}`.   
+
+Also available are the options *first_preamblex*, *last_preamblex*, *first_bodyx* and *last_bodyx* (with x 
+a sequence number 1,2, ... that indicate latex statements that are to inserted as first or last lines of 
+the preamble or the fixed body part of the latex source.  The sequence numbers must be consecutive: 
+if the numbers 1, 2 and 3 are present and number 4 is missing the code will stop after handling number 3. 
+See exampleC for an application of this.
+
+
 ### Additional options:
 
 | option        | description 	|
@@ -51,8 +63,10 @@ done) by e.g.
 |  maketableofcontents  | only for latex, default false		
 |  makelistoflistings   | only for latex, default false	
 |  makelistoffigures    | only for latex, default false	
-|  extra_preamblex      | only for latex, default ' ' , x in 1:10 (extra latex preamble statements)
-|  extra_bodyx          | only for latex, default ' ' , x in 1:10 (extra latex body statements)
+|  first_preamblex      | only for latex, no default
+|  last_preamblex       | only for latex, no default
+|  first_bodyx          | only for latex, no default 
+|  last_bodyx           | only for latex, no default 
 
 ### Acknowledgement
 This code builds heavily on `mxdom2latex.xsl` by Ned Gulley and Matthew Simoneau, September 2003
@@ -64,7 +78,7 @@ The applications contains
  * publish_mpl.m (main function)
  * publish_mpl.xsl (stylesheet)
  * package matlab-prettifier (matlab-prettifier.sty will suffice)
- * publish_mpl_examples.m, exampleA.m and exampleB.m (example files) and their outputs in the html subfolder
+ * publish_mpl_examples.m, exampleA.m, exampleB.m and exampleC.m (example files) and their outputs in the html subfolder
 
 ### Future developments
 No future developments are planned. However you could check [this repository]

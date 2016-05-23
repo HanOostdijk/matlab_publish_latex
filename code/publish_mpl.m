@@ -15,6 +15,11 @@
 % The caption for the second plot can be set in such a latex block (before the plot is actually
 % done) by e.g. *\global\def\captionB{my caption for the second plot}* .
 %
+% Also available are the options *first_preamblex*, *last_preamblex*, *first_bodyx* and *last_bodyx* (with x 
+% a sequence number 1,2, ... that indicate latex statements that are to inserted as first or last lines of
+% the preamble or the fixed body part.  The sequence numbers must be consecutive: if the numbers 1, 2 and 3 are present
+% and number 4 is missing the code will stop after handling number 3.
+%
 % The additional options are:
 %%
 % 
@@ -38,8 +43,10 @@
 %  maketableofcontents  : only for latex, default false 	
 %  makelistoflistings   : only for latex, default false	
 %  makelistoffigures    : only for latex, default false	
-%  extra_preamblex      : only for latex, default ' ' , x in 1:10
-%  extra_bodyx          : only for latex, default ' ' , x in 1:10 
+%  first_preamblex      : only for latex, no default x = 1, 2, ... 
+%  last_preamblex       : only for latex, no default x = 1, 2, ... 
+%  first_bodyx          : only for latex, no default x = 1, 2, ...  
+%  last_bodyx           : only for latex, no default x = 1, 2, ... 
 % 
 %% Acknowledgement
 % This code builds heavily on mxdom2latex.xsl by Ned Gulley and Matthew Simoneau, September 2003
@@ -74,7 +81,7 @@ p1.evalCode         = pstruct.evalcode ;             	% insert evalcode indicati
 p1.format           = pstruct.format;                   % insert format e.g. word, pdf or latex
 if strcmpi(p1.format,'latex')                           % shows the new handling of latex format    
     p1.stylesheet  	= 'publish_mpl_temp.xsl' ;       	% new temporary stylesheet to use
-    construct_xsl('publish_mpl.xsl', ...                % construct temp file using publish_mpl.xsl and the
+    construct_xsl('publish_mpl.xsl', ...               % construct temp file using publish_mpl.xsl and the
         p1.stylesheet, pstruct)                         % parameters (fields) in the structure
     p1.imageFormat  = 'epsc2';                          % image format to use
 else
@@ -159,42 +166,29 @@ else
     end    
 end
 ds      = use_defaults(varpart) ;                       % overwrite default values
-fin  	= fopen(file_in);                               % open input file
-fout  	= fopen(file_out,'wt');                         % open output file
-xsl_lines = [ 1 33 46  ;                                % blocks of xsl lines : copy and insert
-            47 52 59 ;                                  % this means for next line
-            60 69 86;                                   % copy lines 50-59 (inclusive) and skip
-            87 131 132 ] ;                              % lines 60-66 that are inserted by insert_xsl 
-if ds.maketableofcontents 
-    xsl_lines = [xsl_lines ; [133 159 168           	% when tableofcontents erase alternative contents
-            169 inf inf]] ;                             %   copy to end   
-else
-    xsl_lines = [xsl_lines ; ...                        % when no tableofcontents
-            [133 inf inf]] ;                            %   copy to end
-end
-xsl_ci = size(xsl_lines,1)-1 ;                          % blocks with copy and insert (all except last)
-for i = 1:xsl_ci
-    for linenr=xsl_lines(i,1):xsl_lines(i,3)            % lines to read
-        tline           = fgetl(fin);                   % read a line of input file
-        if linenr <= xsl_lines(i,2)                     % but only the first in block
-            fprintf(fout,'%s\n',tline) ;                % are to be written  (other are inserted
-        end
-    end
-    insert_xsl(fout,ds,i)                               % insert xsl-lines for block i
-end
+fin  	= fopen(file_in) ;                           	% open input file
+fout  	= fopen(file_out,'wt') ;                       	% open output file
+blocknr = 0 ;                                         	% number of insert block
 tline = fgetl(fin);                                     % read first line of last block (without inserts)
 while ischar(tline)                                     % if character then not yet end-of-file
-    fprintf(fout,'%s\n',tline) ;                    	% and write it
+    if (length(tline) > 10) && ...
+            (strcmpi(tline(1:11),'insert_hoqc'))
+        blocknr = blocknr + 1 ; 						% number of block to insert
+        insert_xsl(fout,ds,blocknr) ; 					% insert lines of block
+    else
+        fprintf(fout,'%s\n',tline) ;                 	% and write it
+    end
     tline = fgetl(fin);                                 % try to read next line
 end
+
 fclose(fin);                                            % close input file
 fclose(fout);                                           % close output file
-
 end
+
 %% subfunction use_defaults
 function ds= use_defaults(varpart)
 % specify default values in fields of structure
-ds = struct( ...                                        % order should correspond with legal latex order
+ds = struct( ...                                        
     'documentclass', 'article', ...
     'paper', 'a4paper',  ...   
     'sizes', 'margin=1in', ...     
@@ -213,156 +207,172 @@ ds = struct( ...                                        % order should correspon
   	'maketitle', false,   ...                       	% 	
     'maketableofcontents', false,   ...                 % 	
   	'makelistoflistings', false,   ...                  % 	
-  	'makelistoffigures', false,   ...                 	% 
-    'extra_preamble1', ' ', ...                         %
-    'extra_preamble2', ' ', ...                       	%
-    'extra_preamble3', ' ', ...                         %
-    'extra_preamble4', ' ', ...                         %
-    'extra_preamble5', ' ', ...                         %
-    'extra_preamble6', ' ', ...                         %
-    'extra_preamble7', ' ', ...                         %
-    'extra_preamble8', ' ', ...                         %
-    'extra_preamble9', ' ', ...                         %
-    'extra_preamble10', ' ', ...                        %
-    'extra_body1', ' ', ...                             %
-    'extra_body2', ' ', ...                             %
-    'extra_body3', ' ', ...                             %
-    'extra_body4', ' ', ...                             %
-    'extra_body5', ' ', ...                             %
-    'extra_body6', ' ', ...                             %
-    'extra_body7', ' ', ...                             %
-    'extra_body8', ' ', ...                             %
-    'extra_body9', ' ', ...                             %
-    'extra_body10', ' '  ...                            %
+  	'makelistoffigures', false ...
     ) ;
-deffields = fields(ds)' ;                             	% fields of default structure                    
+deffields = fieldnames(ds)' ;                           % fields of default structure                    
 for f1 = deffields                                      % for each of the fields
     f   = f1{1} ;                                       % unpack fieldname
     if isfield(varpart,f)                               % if field exists in varpart
         ds.(f) = varpart.(f) ;                          % copy field to defstruct
     end
 end
-    
+% copy fields like first_preamble2 and last_body3
+vf = fieldnames(varpart) ;                              % fields of input structure
+vf = vf(cellfun(@(x)length(x) ==1, ...                  % fields like first_preamblex etc.
+    regexpi(vf,'^(first|last)_(preamble|body)\d+')));
+for f1 = vf'                                         	% for each of the fields
+    f   = f1{1} ;                                       % unpack fieldname
+    ds.(lower(f)) = varpart.(f) ;                       % copy field to defstruct
 end
+  
+end
+
 %% subfunction insert_xsl
 function insert_xsl(fout,ds,i)
 % insert step for block i (called by construct_xsl)
 %{
 fout    : handle to output xsl file
 ds      : structure with fields to be used
-i       : number of block that is to be handeled
+i       : number of block that is to be handled
 %}
 switch i
-    case 1
-        % 34 \documentclass{article}                    % base value
+    case 1  % insert_hoqc_1
+        %  \documentclass{article}                      % base value
         t1 = '\\documentclass{%s}' ;                    % format for new line
         t1 = sprintf(t1,ds.documentclass);              % create the new line
         fprintf(fout,'%s\n',t1) ;                       % write the new line to output xsl file
-       	% 35 -44 extra_preamblex                        % extra latex statements for preamble
-        for j=1:10 
-            t1 = ds.(sprintf('extra_preamble%.0f',j));
-            fprintf(fout,'%s\n',t1) ;
-        end
-        % 45 \usepackage[a4paper,margin=1in,landscape]{geometry}
+        insert_first_last(fout,ds,'first_preamble')
+    case 2 % % insert_hoqc_2
+        %  \usepackage[a4paper,margin=1in,landscape]{geometry}
         t1 = '\\usepackage[%s,%s,%s]{geometry}';
         t1 = sprintf(t1,ds.paper,ds.sizes,ds.orientation);
         fprintf(fout,'%s\n',t1) ;
-        % 46 \usepackage[framed,numbered]{matlab-prettifier}
+        %  \usepackage[framed,numbered]{matlab-prettifier}
         t1 = '\\usepackage[%s]{matlab-prettifier}';
         t1 = sprintf(t1,ds.prettifier_options);
         fprintf(fout,'%s\n',t1) ;
-    case 2
-        % 53 \lstset{style = Matlab-editor}
+        t1 = ['% package matlab-prettifier created by Julien Cretel. ', ...
+            'Available CTAN (only matlab-prettifier.sty is needed)'];
+        fprintf(fout,'%s\n',t1) ;
+        %  \lstset{style = Matlab-editor}
         t1 = '\\lstset{style = %s}';
         t1 = sprintf(t1,ds.style);
         fprintf(fout,'%s\n',t1) ;
-        % 54 \usepackage[unicode=true,pdftitle={},
+        %  \usepackage[unicode=true,pdftitle={},
         t1 = '\\usepackage[unicode=true,pdftitle={%s},';
         t1 = sprintf(t1,ds.pdftitle);
-        fprintf(fout,'%s\n',t1) ;        
-        % 55 pdfauthor={Han Oostdijk Quantitative Consultancy (han@hanoostdijk.nl)},
+        fprintf(fout,'%s\n',t1) ;
+        %  pdfauthor={Han Oostdijk Quantitative Consultancy (han@hanoostdijk.nl)},
         t1 = 'pdfauthor={%s},';
         t1 = sprintf(t1,ds.pdfauthor);
-        fprintf(fout,'%s\n',t1) ;   
-        % 56 pdfsubject={},
+        fprintf(fout,'%s\n',t1) ;
+        %  pdfsubject={},
         t1 = 'pdfsubject={%s},';
         t1 = sprintf(t1,ds.pdfsubject);
-        fprintf(fout,'%s\n',t1) ;   
-        % 57 pdfkeywords={},
+        fprintf(fout,'%s\n',t1) ;
+        %  pdfkeywords={},
         t1 = 'pdfkeywords={%s},';
         t1 = sprintf(t1,ds.pdfkeywords);
-        fprintf(fout,'%s\n',t1) ;   
-        % 58 pdfproducer={},
+        fprintf(fout,'%s\n',t1) ;
+        %  pdfproducer={},
         t1 = 'pdfproducer={%s},';
         t1 = sprintf(t1,ds.pdfproducer);
-        fprintf(fout,'%s\n',t1) ;   
-        % 59 pdfcreator={},
+        fprintf(fout,'%s\n',t1) ;
+        %  pdfcreator={},
         t1 = 'pdfcreator={%s},';
         t1 = sprintf(t1,ds.pdfcreator);
         fprintf(fout,'%s\n',t1) ;
     case 3
-        % 70 -79 extra_bodyx                            % extra latex statements for body
-        for j=1:10 
-            t1 = ds.(sprintf('extra_body%.0f',j));
-            fprintf(fout,'%s\n',t1) ;
-        end
-     	% 80 \title{mytitle}
+        insert_first_last(fout,ds,'last_preamble')
+    case 4
+        insert_first_last(fout,ds,'first_body')
+        %  \title{mytitle}
         t1 = '\\title{%s}';
         t1 = sprintf(t1,ds.title);
         fprintf(fout,'%s\n',t1) ;
-        % 81 \author{myauthor}
+        %  \author{myauthor}
         t1 = '\\author{%s}';
         t1 = sprintf(t1,ds.author);
-        fprintf(fout,'%s\n',t1) ;    
-      	% 82 \maketitle
-        t1 = '%s\\maketitle'; 
-        if ds.maketitle 
+        fprintf(fout,'%s\n',t1) ;
+        %  \maketitle
+        t1 = '%s\\maketitle';
+        if ds.maketitle
             s1 = '' ;
         else
             s1 = '%' ;
         end
         t1 = sprintf(t1,s1);
-        fprintf(fout,'%s\n',t1) ;   
-        % 83 \tableofcontents
-        t1 = '%s\\tableofcontents'; 
-        if ds.maketableofcontents 
+        fprintf(fout,'%s\n',t1) ;
+        %  \tableofcontents
+        t1 = '%s\\tableofcontents';
+        if ds.maketableofcontents
             s1 = '' ;
         else
             s1 = '%' ;
         end
         t1 = sprintf(t1,s1);
-        fprintf(fout,'%s\n',t1) ;  
-        % 84 \lstlistoflistings 
-        t1 = '%s\\lstlistoflistings'; 
-        if ds.makelistoflistings 
+        fprintf(fout,'%s\n',t1) ;
+        %  \lstlistoflistings
+        t1 = '%s\\lstlistoflistings';
+        if ds.makelistoflistings
             s1 = '' ;
         else
             s1 = '%' ;
         end
         t1 = sprintf(t1,s1);
-        fprintf(fout,'%s\n',t1) ;      
-        % 85 \listoffigures
-        t1 = '%s\\listoffigures'; 
-        if ds.makelistoffigures 
+        fprintf(fout,'%s\n',t1) ;
+        %  \listoffigures
+        t1 = '%s\\listoffigures';
+        if ds.makelistoffigures
             s1 = '' ;
         else
             s1 = '%' ;
         end
-      	t1 = sprintf(t1,s1);
-        fprintf(fout,'%s\n',t1) ;    
-      	% 86 \def\graphwidth{4in} 
-        t1 = '\\def\\graphwidth{%s}'; 
-      	t1 = sprintf(t1,ds.graph_width);
-        fprintf(fout,'%s\n',t1) ;   
-    case 4
-        % 132 \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
+        t1 = sprintf(t1,s1);
+        fprintf(fout,'%s\n',t1) ;
+        %  \def\graphwidth{4in}
+        t1 = '\\def\\graphwidth{%s}';
+        t1 = sprintf(t1,ds.graph_width);
+        fprintf(fout,'%s\n',t1) ;
+    case 5
+        insert_first_last(fout,ds,'last_body')
+  	case 6
+        if ds.maketableofcontents
+            s1 = '<!--' ;
+        else
+            s1 = ' ' ;
+        end
+        fprintf(fout,'%s\n',s1) ;
+   	case 7
+      	if ds.maketableofcontents
+            s1 = '-->' ;
+        else
+            s1 = ' ' ;
+        end
+        fprintf(fout,'%s\n',s1) ;
+    case 8
+        %  \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
         t1 = '\\<xsl:value-of select="$headinglevel"/>%s{<xsl:apply-templates select="steptitle"/>}';
-        if ds.maketableofcontents 
+        if ds.maketableofcontents
             s1 = '' ;
         else
             s1 = '*' ;
         end
         t1 = sprintf(t1,s1);
-        fprintf(fout,'%s\n',t1) ;                
+        fprintf(fout,'%s\n',t1) ;
+end
+end
+
+function insert_first_last(fout,ds,prefix)
+% insert blocks for first_preamble and last_body
+j = 1 ;
+while (j > 0)
+    f = sprintf('%s%.0f',prefix,j);
+    if ~(isfield(ds,f))
+        break
+    else
+        fprintf(fout,'%s\n',ds.(f)) ;
+        j = j + 1 ;
+    end
 end
 end

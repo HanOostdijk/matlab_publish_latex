@@ -31,59 +31,23 @@ Adapted August 2015 by Han Oostdijk
 % use \lstinputlisting{xx.m} for inclusion of source file xx.m
 %
 
-\documentclass{article}
-reserve_extra_line_class1
-reserve_extra_line_class2
-reserve_extra_line_class3
-reserve_extra_line_class4
-reserve_extra_line_class5
-reserve_extra_line_class6
-reserve_extra_line_class7
-reserve_extra_line_class8
-reserve_extra_line_class9
-reserve_extra_line_class10
-\usepackage[a4paper,margin=1in,landscape]{geometry}
-\usepackage[framed,numbered]{matlab-prettifier}
-% package matlab-prettifier created by Julien Cretel. Available CTAN (only matlab-prettifier.sty is needed)
+insert_hoqc_1 : documentclass and first_preamblex
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{color}
 \usepackage{lmodern}
 \usepackage{verbatim}
-\lstset{style = Matlab-editor}
-\usepackage[unicode=true,pdftitle={},
-    pdfauthor={Han Oostdijk Quantitative Consultancy (han@hanoostdijk.nl)},
-    pdfsubject={},
-    pdfkeywords={}{},
-    pdfproducer={},
-    pdfcreator={},
-    bookmarks=false,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
-    breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true,hidelinks]
-    {hyperref} 
-
 \sloppy
 \definecolor{lightgray}{gray}{0.5}
 \setlength{\parindent}{0pt}
 \setcounter{secnumdepth}{-2} 
-
+insert_hoqc_2 : geometry, matlab-prettifier, hyperref (first parms only)
+    bookmarks=false,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+    breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true,hidelinks]
+    {hyperref} 
+insert_hoqc_3 : last_preamblex
 \begin{document}
-reserve_extra_line_document1
-reserve_extra_line_document2
-reserve_extra_line_document3
-reserve_extra_line_document4
-reserve_extra_line_document5
-reserve_extra_line_document6
-reserve_extra_line_document7
-reserve_extra_line_document8
-reserve_extra_line_document9
-reserve_extra_line_document10
-\title{mytitle}
-\author{myauthor}
-\maketitle
-\tableofcontents
-\lstlistoflistings  
-\listoffigures
-\def\graphwidth{4in} 
+insert_hoqc_4 : first_bodyx, title, lists
 \def\captionA{} 
 \def\captionB{} 
 \def\captionC{} 
@@ -100,7 +64,7 @@ reserve_extra_line_document10
 \def\captionN{} 
 \def\captionO{} 
 \def\captionP{} 
-
+insert_hoqc_5 : last_bodyx
     <!-- Determine if the there should be an introduction section. -->
     <xsl:variable name="hasIntro" select="count(cell[@style = 'overview'])"/>
     <xsl:if test = "$hasIntro">
@@ -113,9 +77,11 @@ reserve_extra_line_document10
 
     <!-- Include contents if there are titles for any subsections. -->
     <xsl:if test="count(cell/steptitle[not(@style = 'document')])">
+insert_hoqc_6 :	 <!-- 
       <xsl:call-template name="contents">
         <xsl:with-param name="body-cells" select="$body-cells"/>
       </xsl:call-template>
+insert_hoqc_7 :	  -->
     </xsl:if>
     
     <!-- Loop over each cell -->
@@ -129,7 +95,7 @@ reserve_extra_line_document10
             </xsl:choose>
           </xsl:variable>
 
-\<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>} 
+insert_hoqc_8 :  \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}	
 
 </xsl:if>
 
@@ -153,8 +119,6 @@ reserve_extra_line_document10
     
 </xsl:template>
 
-
-
 <xsl:template name="contents">
   <xsl:param name="body-cells"/>
 \subsection*{Contents}
@@ -167,9 +131,6 @@ reserve_extra_line_document10
     </xsl:for-each>
 \end{itemize}
 </xsl:template>
-
-
-
 
 <!-- HTML Tags in text sections -->
 <xsl:template match="p">\begin{par}
