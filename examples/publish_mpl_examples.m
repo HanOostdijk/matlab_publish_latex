@@ -140,4 +140,17 @@ pstruct = struct( ...                                   % publish options
         true , ...  
     'makelistoflistings', ...                           % create lstlistoflistings
     true);   
-newname = publish_mpl('exampleC', pstruct) ;            % produce the output file (tex)    
+newname = publish_mpl('exampleC', pstruct) ;            % produce the output file (tex)   
+%% example8: -> latex  
+% Same as example2 but the layout is landscape and
+% no prettifier package used.
+mycode = { ...                                          % example of code to execute (one line)  
+            'exampleA'   ...
+            } ; 
+pstruct = struct( ...                                   % publish options
+    'format' , 'latex' , ...                            % output format latex using the new xsl file
+    'call' , {mycode} , ...                             % code to execute (defined above)
+    'style', 'matlab-noformat', ... 
+    'newname' , 'exampleA4.tex');                       % new name of output file 
+   
+newname = publish_mpl('exampleA', pstruct) ;           	% produce the output file (tex)    

@@ -29,7 +29,8 @@
 %  sizes                : only for latex, default 'margin=1in'   
 %  graph_width          : only for latex, default '4in'   
 %  orientation          : only for latex, default 'landscape' 
-%  prettifier_options   : only for latex, default 'framed,numbered'
+%  prettifier_options   : only for latex, default 'frame=single,numbers=left,basicstyle=\small\ttfamily'
+%  listing_options      : only for latex, default ''
 %  style                : only for latex, default 'Matlab-editor'
 %  pdftitle             : only for latex, default ''
 %  pdfauthor            : only for latex, default ''
@@ -195,7 +196,9 @@ ds = struct( ...
     'graph_width', '4in', ... 
     'orientation', 'landscape',  ...                 	% 'landscape' or 'portrait'
     'prettifier_options', 'framed,numbered', ...        % (un)framed, (un)numbered
-    'style', 'Matlab-editor',  ...                     	% 'Matlab-editor', 'Matlab-bw', 'Matlab-Pyglike' 
+    'listing_options', ...                              % options for listings in case that Matlab prettifier is not used
+       'frame=single,numbers=left,basicstyle=\small\ttfamily', ... % (i.e. when style ='Matlab-noformat')
+    'style', 'Matlab-editor',  ...                     	% 'Matlab-editor', 'Matlab-bw', 'Matlab-Pyglike', 'Matlab-noformat'
     'pdftitle', '',  ...                                % 	
     'pdfauthor', '',  ...                               % 	
     'pdfsubject', '',  ...                              % 	
@@ -247,17 +250,25 @@ switch i
         t1 = '\\usepackage[%s,%s,%s]{geometry}';
         t1 = sprintf(t1,ds.paper,ds.sizes,ds.orientation);
         fprintf(fout,'%s\n',t1) ;
-        %  \usepackage[framed,numbered]{matlab-prettifier}
-        t1 = '\\usepackage[%s]{matlab-prettifier}';
-        t1 = sprintf(t1,ds.prettifier_options);
-        fprintf(fout,'%s\n',t1) ;
-        t1 = ['% package matlab-prettifier created by Julien Cretel. ', ...
-            'Available CTAN (only matlab-prettifier.sty is needed)'];
-        fprintf(fout,'%s\n',t1) ;
-        %  \lstset{style = Matlab-editor}
-        t1 = '\\lstset{style = %s}';
-        t1 = sprintf(t1,ds.style);
-        fprintf(fout,'%s\n',t1) ;
+        if strcmpi(ds.style,'Matlab-noformat')          % style set to 'Matlab-noformat'
+            t1 = '\usepackage{listings}';               % indicate use of listings package
+            fprintf(fout,'%s\n',t1) ;                   % without prettifier package
+            t1 = '\\lstset{%s}';                        % options for listings package
+            t1 = sprintf(t1,ds.listing_options);
+            fprintf(fout,'%s\n',t1) ;
+        else
+            %  \usepackage[framed,numbered]{matlab-prettifier}
+            t1 = '\\usepackage[%s]{matlab-prettifier}';
+            t1 = sprintf(t1,ds.prettifier_options);
+            fprintf(fout,'%s\n',t1) ;
+            t1 = ['% package matlab-prettifier created by Julien Cretel. ', ...
+                'Available CTAN (only matlab-prettifier.sty is needed)'];
+            fprintf(fout,'%s\n',t1) ;
+            %  \lstset{style = Matlab-editor}
+            t1 = '\\lstset{style = %s}';
+            t1 = sprintf(t1,ds.style);
+            fprintf(fout,'%s\n',t1) ;
+        end
         %  \usepackage[unicode=true,pdftitle={},
         t1 = '\\usepackage[unicode=true,pdftitle={%s},';
         t1 = sprintf(t1,ds.pdftitle);

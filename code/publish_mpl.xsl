@@ -34,7 +34,7 @@ Adapted August 2015 by Han Oostdijk
 insert_hoqc_1 : documentclass and first_preamblex
 \usepackage{graphicx}
 \usepackage{epstopdf}
-\usepackage{color}
+\usepackage{xcolor}
 \usepackage{lmodern}
 \usepackage{verbatim}
 \sloppy

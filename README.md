@@ -50,6 +50,7 @@ See exampleC for an application of this.
 |  graph_width   		| only for latex, default '4in'   
 |  orientation          | only for latex, default 'landscape' 
 |  prettifier_options   | only for latex, default 'framed,numbered'
+|  listing_options      | only for latex, default 'frame=single,numbers=left,basicstyle=\small\ttfamily'
 |  style                | only for latex, default 'Matlab-editor'
 |  pdftitle             | only for latex, default ''
 |  pdfauthor            | only for latex, default ''
